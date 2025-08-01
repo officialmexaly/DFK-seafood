@@ -1,22 +1,105 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
-import { ShoppingCart, Heart, Search, User, Menu, X, Star, ArrowRight, Zap, Shield, Truck, Fish, Waves, Clock, Award, ChefHat, Thermometer, MapPin, Phone, Mail, Users, TrendingUp, Globe, Anchor, Camera, Video } from 'lucide-react';
+import { ShoppingCart, Heart, Search, User, Menu, X, Star, ArrowRight, Shield, Truck, Fish, Waves, Clock, Award, ChefHat, Thermometer, MapPin, Phone, Mail, Users, TrendingUp, Globe, Anchor, Video } from 'lucide-react';
 
-const SeafoodEcommerce = () => {
-  const [cartItems, setCartItems] = useState([]);
-  const [wishlistItems, setWishlistItems] = useState([]);
-  const [currentView, setCurrentView] = useState('home');
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [isLoaded, setIsLoaded] = useState(false);
+// Type definitions
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  originalPrice: number;
+  image: string;
+  category: string;
+  rating: number;
+  reviews: number;
+  badge: string;
+  weight: string;
+  origin: string;
+}
+
+interface CartItem extends Product {
+  quantity: number;
+}
+
+interface Stat {
+  number: string;
+  label: string;
+  icon: React.ComponentType<{ className?: string }>;
+}
+
+interface Location {
+  id: number;
+  name: string;
+  image: string;
+  specialty: string;
+  description: string;
+}
+
+interface TeamMember {
+  id: number;
+  name: string;
+  role: string;
+  image: string;
+  experience: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  icon: string;
+}
+
+interface Recipe {
+  id: number;
+  name: string;
+  image: string;
+  time: string;
+  difficulty: string;
+}
+
+interface Testimonial {
+  id: number;
+  name: string;
+  role: string;
+  comment: string;
+  rating: number;
+  avatar: string;
+}
+
+interface Contact {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  info: string;
+  desc: string;
+}
+
+interface Feature {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  desc: string;
+  color: string;
+}
+
+interface ProductCardProps {
+  product: Product;
+  index?: number;
+}
+
+const SeafoodEcommerce: React.FC = () => {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [wishlistItems, setWishlistItems] = useState<Product[]>([]);
+  const [currentView, setCurrentView] = useState<string>('home');
+  const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
 
   useEffect(() => {
     setIsLoaded(true);
   }, []);
 
-  const products = [
+  const products: Product[] = [
     {
       id: 1,
       name: "Atlantic Salmon Fillet",
@@ -123,14 +206,14 @@ const SeafoodEcommerce = () => {
     }
   ];
 
-  const stats = [
+  const stats: Stat[] = [
     { number: "50K+", label: "Happy Customers", icon: Users },
     { number: "2M+", label: "Pounds Delivered", icon: TrendingUp },
     { number: "15+", label: "Countries Sourced", icon: Globe },
     { number: "24/7", label: "Fresh Guarantee", icon: Clock }
   ];
 
-  const locations = [
+  const locations: Location[] = [
     {
       id: 1,
       name: "Pacific Northwest",
@@ -154,7 +237,7 @@ const SeafoodEcommerce = () => {
     }
   ];
 
-  const team = [
+  const team: TeamMember[] = [
     {
       id: 1,
       name: "Captain James Mitchell",
@@ -178,14 +261,14 @@ const SeafoodEcommerce = () => {
     }
   ];
 
-  const categories = [
+  const categories: Category[] = [
     { id: 'all', name: 'All Seafood', icon: '🐟' },
     { id: 'fish', name: 'Fresh Fish', icon: '🐠' },
     { id: 'shellfish', name: 'Shellfish', icon: '🦐' },
     { id: 'frozen', name: 'Frozen', icon: '❄️' }
   ];
 
-  const recipes = [
+  const recipes: Recipe[] = [
     {
       id: 1,
       name: "Grilled Salmon with Herbs",
@@ -209,12 +292,12 @@ const SeafoodEcommerce = () => {
     }
   ];
 
-  const testimonials = [
+  const testimonials: Testimonial[] = [
     {
       id: 1,
       name: "Chef Marcus Johnson",
       role: "Executive Chef",
-      comment: "The quality is unmatched. My restaurant only sources from Afro Seafood's.",
+      comment: "The quality is unmatched. My restaurant only sources from Afro Seafood&apos;s.",
       rating: 5,
       avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&face"
     },
@@ -242,7 +325,7 @@ const SeafoodEcommerce = () => {
     return matchesCategory && matchesSearch;
   });
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product): void => {
     setCartItems(prev => {
       const existing = prev.find(item => item.id === product.id);
       if (existing) {
@@ -256,7 +339,7 @@ const SeafoodEcommerce = () => {
     });
   };
 
-  const toggleWishlist = (product) => {
+  const toggleWishlist = (product: Product): void => {
     setWishlistItems(prev => {
       const exists = prev.find(item => item.id === product.id);
       if (exists) {
@@ -266,11 +349,11 @@ const SeafoodEcommerce = () => {
     });
   };
 
-  const removeFromCart = (productId) => {
+  const removeFromCart = (productId: number): void => {
     setCartItems(prev => prev.filter(item => item.id !== productId));
   };
 
-  const updateQuantity = (productId, newQuantity) => {
+  const updateQuantity = (productId: number, newQuantity: number): void => {
     if (newQuantity === 0) {
       removeFromCart(productId);
       return;
@@ -287,7 +370,7 @@ const SeafoodEcommerce = () => {
   const cartTotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const ProductCard = ({ product, index = 0 }) => {
+  const ProductCard: React.FC<ProductCardProps> = ({ product, index = 0 }) => {
     const isInWishlist = wishlistItems.some(item => item.id === product.id);
     const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
 
@@ -297,6 +380,7 @@ const SeafoodEcommerce = () => {
         style={{ animationDelay: `${index * 150}ms` }}
       >
         <div className="relative overflow-hidden">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img 
             src={product.image} 
             alt={product.name}
@@ -361,7 +445,7 @@ const SeafoodEcommerce = () => {
     );
   };
 
-  const HomePage = () => (
+  const HomePage: React.FC = () => (
     <div className="space-y-16">
       {/* Hero Section */}
       <div className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-900 via-teal-900 to-cyan-900">
@@ -370,7 +454,7 @@ const SeafoodEcommerce = () => {
         <div className={`relative z-10 text-center text-white max-w-4xl px-6 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>
           <Fish className="w-16 h-16 mx-auto mb-6 text-teal-300 animate-bounce" />
           <h1 className="text-6xl md:text-8xl font-bold mb-6 bg-gradient-to-r from-white to-teal-200 bg-clip-text text-transparent">
-            Afro Seafood's
+            Afro Seafood&apos;s
           </h1>
           <p className="text-xl md:text-2xl mb-8 text-gray-200 leading-relaxed">
             Premium fresh seafood delivered daily from ocean to your door
@@ -387,14 +471,14 @@ const SeafoodEcommerce = () => {
 
       {/* Features Section */}
       <div className="container mx-auto px-6">
-        <h2 className={`text-4xl font-bold text-center mb-12 text-gray-800 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>Why Choose Afro Seafood's?</h2>
+        <h2 className={`text-4xl font-bold text-center mb-12 text-gray-800 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>Why Choose Afro Seafood&apos;s?</h2>
         <div className="flex flex-wrap justify-center gap-6">
-          {[
+          {([
             { icon: Thermometer, title: "Fresh Daily", desc: "Delivered within 24 hours of catch", color: "text-blue-600" },
             { icon: Shield, title: "Quality Guaranteed", desc: "100% satisfaction or money back", color: "text-teal-600" },
             { icon: Truck, title: "Fast Delivery", desc: "Same day delivery in major cities", color: "text-cyan-600" },
             { icon: Award, title: "Sustainably Sourced", desc: "Responsibly caught seafood", color: "text-green-600" }
-          ].map((feature, idx) => (
+          ] as Feature[]).map((feature, idx) => (
             <div 
               key={idx} 
               className={`text-center p-6 rounded-2xl bg-gradient-to-br from-gray-50 to-white shadow-lg hover:shadow-xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 w-72 ${isLoaded ? 'animate-slideInUp' : 'opacity-0'}`}
@@ -410,7 +494,7 @@ const SeafoodEcommerce = () => {
 
       {/* Featured Products */}
       <div className="container mx-auto px-6">
-        <h2 className={`text-4xl font-bold text-center mb-12 text-gray-800 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>Today's Fresh Catch</h2>
+        <h2 className={`text-4xl font-bold text-center mb-12 text-gray-800 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>Today&apos;s Fresh Catch</h2>
         <div className="flex flex-wrap justify-center gap-6">
           {products.slice(0, 4).map((product, index) => (
             <ProductCard key={product.id} product={product} index={index} />
@@ -431,7 +515,7 @@ const SeafoodEcommerce = () => {
         <div className="container mx-auto px-6">
           <div className={`text-center mb-12 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>
             <ChefHat className="w-12 h-12 mx-auto mb-4 text-blue-600 animate-bounce" />
-            <h2 className="text-4xl font-bold mb-4 text-gray-800">Chef's Recommendations</h2>
+            <h2 className="text-4xl font-bold mb-4 text-gray-800">Chef&apos;s Recommendations</h2>
             <p className="text-gray-600 text-lg">Delicious recipes to make the most of your fresh seafood</p>
           </div>
           <div className="flex flex-wrap justify-center gap-6">
@@ -441,6 +525,7 @@ const SeafoodEcommerce = () => {
                 className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 w-80 ${isLoaded ? 'animate-slideInUp' : 'opacity-0'}`}
                 style={{ animationDelay: `${index * 200}ms` }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={recipe.image} alt={recipe.name} className="w-full h-48 object-cover" />
                 <div className="p-6">
                   <h3 className="font-bold text-lg mb-3 text-gray-800">{recipe.name}</h3>
@@ -478,8 +563,9 @@ const SeafoodEcommerce = () => {
                   <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
-              <p className="text-gray-700 mb-4 italic">"{testimonial.comment}"</p>
+              <p className="text-gray-700 mb-4 italic">&ldquo;{testimonial.comment}&rdquo;</p>
               <div className="flex items-center gap-3">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={testimonial.avatar} 
                   alt={testimonial.name}
@@ -518,7 +604,7 @@ const SeafoodEcommerce = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-teal-50 to-cyan-50"></div>
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-teal-600/10"></div>
         <div className="container mx-auto px-6 relative z-10">
-          <h2 className={`text-4xl font-bold text-center mb-12 text-gray-800 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>Afro Seafood's by the Numbers</h2>
+          <h2 className={`text-4xl font-bold text-center mb-12 text-gray-800 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>Afro Seafood&apos;s by the Numbers</h2>
           <div className="flex flex-wrap justify-center gap-8">
             {stats.map((stat, index) => (
               <div 
@@ -551,6 +637,7 @@ const SeafoodEcommerce = () => {
                 style={{ animationDelay: `${index * 200}ms` }}
               >
                 <div className="relative overflow-hidden h-48">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img 
                     src={location.image} 
                     alt={location.name}
@@ -594,6 +681,7 @@ const SeafoodEcommerce = () => {
                 className={`bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-center border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 hover:-translate-y-2 w-72 ${isLoaded ? 'animate-slideInUp' : 'opacity-0'}`}
                 style={{ animationDelay: `${index * 200}ms` }}
               >
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img 
                   src={member.image} 
                   alt={member.name}
@@ -642,14 +730,14 @@ const SeafoodEcommerce = () => {
         <div className="container mx-auto px-6 relative z-10">
           <div className={`text-center mb-12 ${isLoaded ? 'animate-fadeInUp' : 'opacity-0'}`}>
             <h2 className="text-4xl font-bold mb-4 text-white">Get in Touch</h2>
-            <p className="text-blue-100 text-lg">Have questions? We're here to help with your seafood needs</p>
+            <p className="text-blue-100 text-lg">Have questions? We&apos;re here to help with your seafood needs</p>
           </div>
           <div className="flex flex-wrap justify-center gap-8">
-            {[
+            {([
               { icon: Phone, title: "Call Us", info: "1-800-SEAFOOD", desc: "Mon-Fri 8AM-8PM EST" },
               { icon: Mail, title: "Email Us", info: "hello@oceanfinest.com", desc: "24/7 Support Available" },
               { icon: MapPin, title: "Visit Us", info: "123 Harbor Way", desc: "Seattle, WA 98101" }
-            ].map((contact, index) => (
+            ] as Contact[]).map((contact, index) => (
               <div 
                 key={index}
                 className={`bg-white/10 backdrop-blur-lg rounded-2xl p-6 text-center border border-white/20 shadow-xl hover:shadow-2xl transition-all duration-500 transform hover:scale-105 w-72 ${isLoaded ? 'animate-slideInUp' : 'opacity-0'}`}
@@ -667,7 +755,7 @@ const SeafoodEcommerce = () => {
     </div>
   );
 
-  const ProductsPage = () => (
+  const ProductsPage: React.FC = () => (
     <div className="container mx-auto px-6 py-8">
       {/* Search and Filter Bar */}
       <div className="mb-8 space-y-6">
@@ -716,7 +804,7 @@ const SeafoodEcommerce = () => {
     </div>
   );
 
-  const CartPage = () => (
+  const CartPage: React.FC = () => (
     <div className="container mx-auto px-6 py-8">
       <h2 className="text-3xl font-bold mb-8 text-gray-800">Your Fresh Cart</h2>
       
@@ -736,6 +824,7 @@ const SeafoodEcommerce = () => {
           <div className="lg:col-span-2 space-y-4">
             {cartItems.map(item => (
               <div key={item.id} className="bg-white rounded-2xl shadow-lg p-6 flex items-center gap-6">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded-xl" />
                 <div className="flex-1">
                   <h3 className="font-bold text-lg text-gray-800">{item.name}</h3>
@@ -807,7 +896,7 @@ const SeafoodEcommerce = () => {
             <div className="flex items-center space-x-4">
               <Fish className="w-8 h-8 text-blue-600" />
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">
-                Afro Seafood's
+                Afro Seafood&apos;s
               </h1>
             </div>
             
@@ -904,7 +993,7 @@ const SeafoodEcommerce = () => {
               <div className="flex items-center gap-3 mb-4">
                 <Fish className="w-8 h-8 text-teal-400" />
                 <h3 className="text-xl font-bold bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
-                  Afro Seafood's
+                  Afro Seafood&apos;s
                 </h3>
               </div>
               <p className="text-gray-400 mb-4">Premium fresh seafood delivered daily from ocean to your door. Sustainably sourced, expertly handled, and guaranteed fresh.</p>
@@ -947,7 +1036,7 @@ const SeafoodEcommerce = () => {
           
           <div className="border-t border-gray-800 mt-8 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-              <p className="text-gray-400">&copy; 2025 Afro Seafood's. All rights reserved.</p>
+              <p className="text-gray-400">&copy; 2025 Afro Seafood&apos;s. All rights reserved.</p>
               <div className="flex items-center gap-6">
                 <span className="text-gray-400 text-sm">🌊 Sustainably Sourced</span>
                 <span className="text-gray-400 text-sm">❄️ Cold Chain Certified</span>
